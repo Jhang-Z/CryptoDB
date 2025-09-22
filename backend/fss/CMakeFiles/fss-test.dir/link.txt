@@ -1,0 +1,1 @@
+/usr/bin/c++ "CMakeFiles/fss-test.dir/fss-test.cpp.o" -o fss-test  libfss.a -L/usr/lib/x86_64-linux-gnu -Wl,-Bstatic -lcrypto -Wl,-Bdynamic -ldl -lssl -lgmpxx -lgmp -lpthread

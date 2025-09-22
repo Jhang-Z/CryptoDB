@@ -1,0 +1,3 @@
+/home/user/workplace/CryptoDB/backend/build/CMakeFiles/backend.dir
+/home/user/workplace/CryptoDB/backend/build/CMakeFiles/edit_cache.dir
+/home/user/workplace/CryptoDB/backend/build/CMakeFiles/rebuild_cache.dir

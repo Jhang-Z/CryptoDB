@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/user/workplace/CryptoDB/backend/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

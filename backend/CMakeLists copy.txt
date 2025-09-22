@@ -1,0 +1,57 @@
+cmake_minimum_required(VERSION 3.10)
+project(hello_drogon)
+
+# 设置 C++ 标准为 C++17
+set(CMAKE_CXX_STANDARD 17)
+
+# ======================
+# 1. 查找 Drogon 库
+# ======================
+find_package(Drogon REQUIRED)
+
+# ======================
+# 2. 查找 MySQL 客户端库（libmysqlclient）
+# ======================
+
+# 查找 MySQL 的头文件目录（比如 /usr/include/mysql）
+find_path(MYSQL_INCLUDE_DIR mysql/mysql.h
+    PATHS /usr/include/mysql
+          /usr/local/include/mysql
+)
+
+# 查找 MySQL 的库文件（libmysqlclient.so 或 .a）
+find_library(MYSQL_CLIENT_LIB mysqlclient
+    PATHS /usr/lib
+          /usr/lib/x86_64-linux-gnu
+          /usr/local/lib
+)
+
+# 检查是否找到了 MySQL 头文件和库
+if (NOT MYSQL_INCLUDE_DIR OR NOT MYSQL_CLIENT_LIB)
+    message(FATAL_ERROR "❌ MySQL client library or headers not found. Please install libmysqlclient-dev")
+endif()
+
+message(STATUS "✅ Found MySQL include dir: ${MYSQL_INCLUDE_DIR}")
+message(STATUS "✅ Found MySQL client lib: ${MYSQL_CLIENT_LIB}")
+
+# ======================
+# 3. 添加可执行文件
+# ======================
+add_executable(hello_drogon main.cpp)
+
+# ======================
+# 4. 链接库：Drogon + MySQL
+# ======================
+target_link_libraries(hello_drogon
+    PRIVATE
+    Drogon::Drogon
+    ${MYSQL_CLIENT_LIB}  # 链接 MySQL 客户端库
+)
+
+# ======================
+# 5. 添加 MySQL 头文件搜索路径
+# ======================
+target_include_directories(hello_drogon
+    PRIVATE
+    ${MYSQL_INCLUDE_DIR}  # 让编译器能找到 mysql/mysql.h
+)

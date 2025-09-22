@@ -1,0 +1,2 @@
+/usr/bin/ar qc libfss.a "CMakeFiles/fss.dir/fss-client.cpp.o" "CMakeFiles/fss.dir/fss-server.cpp.o" "CMakeFiles/fss.dir/fss-common.cpp.o"
+/usr/bin/ranlib libfss.a

@@ -1,0 +1,8 @@
+/home/user/workplace/test/backend/fss/CMakeFiles/fss.dir
+/home/user/workplace/test/backend/fss/CMakeFiles/fss-test.dir
+/home/user/workplace/test/backend/fss/CMakeFiles/edit_cache.dir
+/home/user/workplace/test/backend/fss/CMakeFiles/rebuild_cache.dir
+/home/user/workplace/test/backend/fss/CMakeFiles/list_install_components.dir
+/home/user/workplace/test/backend/fss/CMakeFiles/install.dir
+/home/user/workplace/test/backend/fss/CMakeFiles/install/local.dir
+/home/user/workplace/test/backend/fss/CMakeFiles/install/strip.dir

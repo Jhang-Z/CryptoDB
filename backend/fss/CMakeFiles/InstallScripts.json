@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/user/workplace/test/backend/fss/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
