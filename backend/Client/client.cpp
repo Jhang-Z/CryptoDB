@@ -13,6 +13,15 @@
 
 using namespace drogon;
 using json = nlohmann::json;
+Fss fClient, fServer;
+ServerKeyEq k0;
+ServerKeyEq k1;
+
+
+std::map<std::string, mpz_class> g_ans0_data_for_8081;
+
+// 全局变量：用于存放要传给 8082 的 ans1 数据（列名, ans1）
+std::map<std::string, mpz_class>g_ans1_data_for_8082;
 
 
 // 计算 FSS 结果，并以 JSON 格式返回 ans0 和 ans1
@@ -27,9 +36,7 @@ std::string compute_fss_results(const std::string& input_str, const std::string&
     }
 
     uint64_t b = 1;
-    Fss fClient, fServer;
-    ServerKeyEq k0;
-    ServerKeyEq k1;
+   
 
     initializeClient(&fClient, 10, 2);
     generateTreeEq(&fClient, &k0, &k1, a, b);
@@ -101,6 +108,21 @@ std::string compute_fss_results(const std::string& input_str, const std::string&
         }
     }
 
+    g_ans0_data_for_8081.clear();
+    g_ans1_data_for_8082.clear();
+
+    for (const auto& [col_name, vals] : column_results) {
+    // ans0 是 vals.first (f0 * col_val)，转为字符串
+    mpz_class ans0 = vals.first;
+    // ans1 是 vals.second (f1 * col_val)，转为字符串
+    mpz_class ans1 = vals.second;
+    // 添加到 8081 要返回的 ans0 数据：{ 列名, ans0 }
+    g_ans0_data_for_8081.emplace(col_name, ans0);
+
+    // 添加到 8082 要返回的 ans1 数据：{ 列名, ans1 }
+    g_ans1_data_for_8082.emplace(col_name, ans1);
+}
+
     // 后端返回的 JSON 格式示例：
     //     {
     //   "status": "success",
@@ -130,35 +152,6 @@ std::string compute_fss_results(const std::string& input_str, const std::string&
 }
 
 
-    // for (unsigned long i = 0; i < num_rows; ++i) {
-    //     MYSQL_ROW row = mysql_fetch_row(result);
-    //     if (!row || !row[0]) continue;
-
-    //     std::string id_str = row[0];
-    //     uint64_t i_val = 0;
-    //     try {
-    //         i_val = std::stoull(id_str);
-    //     } catch (...) {
-    //         std::cerr << "⚠️ 跳过无效ID: " << id_str << std::endl;
-    //         continue;
-    //     }
-
-    //     ans0 += evaluateEq(&fServer, &k0, i_val)*i_val;
-    //     ans1 += evaluateEq(&fServer, &k1, i_val)*i_val;
-    // }
-
-    // if (result) mysql_free_result(result);
-    // mysql_close(conn);
-
-    // // 构造返回的 JSON
-    // json j;
-    // j["ans0"] = ans0.get_str();
-    // j["ans1"] = ans1.get_str();
-    // j["status"] = "success";
-
-    // return j.dump(); // 转为字符串返回
-
-    
 
 
 
@@ -258,6 +251,110 @@ int main() {
 
     std::cout << "🚀 Drogon 1.9 服务器运行在 http://localhost:8080" << std::endl;
     std::cout << "🔗 POST /api/secureQuery {\"query\":\"xxx\"}" << std::endl;
+
+    app().addListener("0.0.0.0", 8081);
+
+    app().registerHandler(
+    "/server0",
+    [](const HttpRequestPtr& req,
+       std::function<void(const HttpResponsePtr&)>&& callback) {
+         // 处理 CORS 预检请求
+        if (req->getMethod() == HttpMethod::Options) {
+            auto resp = HttpResponse::newHttpResponse();
+            resp->setStatusCode(k200OK);
+            resp->addHeader("Access-Control-Allow-Origin", "*");
+            resp->addHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+            resp->addHeader("Access-Control-Allow-Headers", "Content-Type");
+            callback(resp);
+            return;
+        }
+
+        // 仅处理 POST
+        if (req->getMethod() != HttpMethod::Post) {
+            auto resp = HttpResponse::newHttpResponse();
+            resp->setStatusCode(k405MethodNotAllowed);
+            resp->setBody("Method Not Allowed: Only POST accepted");
+            resp->setContentTypeCode(ContentType::CT_TEXT_PLAIN);
+            callback(resp);
+            return;
+        }
+
+        json j;
+        j["status"] = "success";
+    
+        json columns_array = json::array();
+        for (const auto& [col_name, vals] : g_ans0_data_for_8081) {
+            columns_array.push_back({
+                {"name", col_name},
+                {"ans0", vals.get_str()}
+            });
+        }
+        j["columns"] = columns_array;
+
+        // 返回 JSON 文本
+        auto resp = HttpResponse::newHttpResponse();
+        resp->setBody(j.dump());
+        resp->setContentTypeCode(ContentType::CT_APPLICATION_JSON); // 重要！告诉前端这是 JSON
+        resp->addHeader("Access-Control-Allow-Origin", "*");
+        callback(resp);
+    },
+    {HttpMethod::Post, HttpMethod::Options}
+);
+
+
+
+    app().addListener("0.0.0.0", 8082);
+
+    app().registerHandler(
+    "/server1",
+    [](const HttpRequestPtr& req,
+       std::function<void(const HttpResponsePtr&)>&& callback) {
+         // 处理 CORS 预检请求
+        if (req->getMethod() == HttpMethod::Options) {
+            auto resp = HttpResponse::newHttpResponse();
+            resp->setStatusCode(k200OK);
+            resp->addHeader("Access-Control-Allow-Origin", "*");
+            resp->addHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+            resp->addHeader("Access-Control-Allow-Headers", "Content-Type");
+            callback(resp);
+            return;
+        }
+
+        // 仅处理 POST
+        if (req->getMethod() != HttpMethod::Post) {
+            auto resp = HttpResponse::newHttpResponse();
+            resp->setStatusCode(k405MethodNotAllowed);
+            resp->setBody("Method Not Allowed: Only POST accepted");
+            resp->setContentTypeCode(ContentType::CT_TEXT_PLAIN);
+            callback(resp);
+            return;
+        }
+
+        json j;
+        j["status"] = "success";
+    
+        json columns_array = json::array();
+        for (const auto& [col_name, vals] : g_ans1_data_for_8082) {
+            columns_array.push_back({
+                {"name", col_name},
+                {"ans1", vals.get_str()}
+            });
+        }
+        j["columns"] = columns_array;
+
+        // 返回 JSON 文本
+        auto resp = HttpResponse::newHttpResponse();
+        resp->setBody(j.dump());
+        resp->setContentTypeCode(ContentType::CT_APPLICATION_JSON); // 重要！告诉前端这是 JSON
+        resp->addHeader("Access-Control-Allow-Origin", "*");
+        callback(resp);
+
+       
+    },
+    {HttpMethod::Post, HttpMethod::Options}
+);
+
+
 
     // 启动服务
     app().run();
