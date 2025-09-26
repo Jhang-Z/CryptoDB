@@ -1,0 +1,140 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0a0a14;
+  color: white;
+}
+
+.login-box {
+  background-color: #121222;
+  padding: 120px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid #2a2a3d;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-box h2 {
+  margin-bottom: 30px;
+  color: #ffffff;
+}
+
+.input-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #e2e8f0;
+  font-size: 14px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #2a2a3d;
+  border-radius: 6px;
+  background-color: #1a1a2e;
+  color: #ffffff;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #4dabff;
+  box-shadow: 0 0 5px rgba(77, 171, 255, 0.5);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #4dabff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #339af0;
+}
+
+/* 自定义登录成功弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 500; /* 确保在最上层 */
+}
+
+.modal-box {
+  background-color: #121222;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  border: 1px solid #2a2a3d;
+  text-align: center;
+  color: #ffffff;
+  min-width: 300px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-box h3 {
+  margin: 0 0 15px 0;
+  color: #4dabff;
+  font-size: 20px;
+}
+
+.modal-box p {
+  margin-bottom: 25px;
+  color: #b0b0b0;
+  font-size: 14px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-modal-confirm {
+  padding: 10px 24px;
+  background-color: #4dabff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-modal-confirm:hover {
+  background-color: #339af0;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

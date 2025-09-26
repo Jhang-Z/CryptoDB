@@ -1,0 +1,801 @@
+
+
+.logout-btn:hover {
+  color: #ffffff;
+  border-color: #4dabff;
+}
+
+.owner-content {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.data-panel {
+  flex: 1.5; /* 保持原比例 */
+  min-width: 400px;
+  background-color: #121222;
+  border-radius: 12px;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  overflow: hidden;
+}
+
+.operations-panel {
+  flex: 2; /* 增加这个值使操作面板更宽 */
+  min-width: 500px; /* 增加最小宽度 */
+  background-color: #121222;
+  border-radius: 12px;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+
+.panel-header {
+  padding: 20px;
+  border-bottom: 1px solid #2a2a3d;
+}
+
+.panel-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+
+.operations-content {
+  padding: 25px;
+}
+
+.data-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #2a2a3d;
+}
+
+.data-item:last-child {
+  border-bottom: none;
+}
+
+.data-item label {
+  color: #b0b0b0;
+  font-weight: 500;
+}
+
+.data-item span {
+  color: #ffffff;
+}
+
+.premium-badge {
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  color: #000000 !important;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.view-report-btn,
+.upload-btn,
+.settings-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+}
+
+
+
+.settings-btn {
+  background-color: #2a2a3d;
+  color: #ffffff;
+  border: 1px solid #3a3a4d;
+}
+
+.settings-btn:hover {
+  background-color: #3a3a4d;
+  border-color: #4dabff;
+}
+
+.sync-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 10px 0;
+  padding: 10px 0;
+}
+
+.sync-status label {
+  color: #b0b0b0;
+}
+
+.status-idle {
+  color: #48bb78;
+  font-weight: 600;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #2a2a3d;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #4dabff, #805ad5);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+
+.data-owner-container {
+  min-height: 100vh;
+  background-color: #0a0a14;
+  color: white;
+  padding: 20px;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(77, 171, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(128, 90, 213, 0.1) 0%, transparent 50%);
+}
+
+.owner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  padding: 0 20px;
+}
+
+.header-left h1 {
+  color: #4dabff;
+  font-size: 28px;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(77, 171, 255, 0.5);
+}
+
+.role-badge {
+  background: linear-gradient(45deg, #2a2b2c, #193144);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 15px;
+  width: 90px;
+  position:left;
+}
+
+.logout-btn {
+  background-color: transparent;
+  color: #b0b0b0;
+  border: 1px solid #2a2a3d;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  color: #ffffff;
+  border-color: #4dabff;
+}
+
+.owner-content {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+
+
+.panel-header {
+  padding: 20px;
+  border-bottom: 1px solid #2a2a3d;
+}
+
+.panel-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.data-content,
+.operations-content {
+  padding: 25px;
+  overflow-x: auto; 
+ 
+}
+
+
+
+.premium-badge {
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  color: #000000 !important;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+
+.sync-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 10px 0;
+  padding: 10px 0;
+}
+
+.sync-status label {
+  color: #b0b0b0;
+}
+
+.status-idle {
+  color: #48bb78;
+  font-weight: 600;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #2a2a3d;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #4dabff, #805ad5);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+
+
+
+/* 数据面板样式 - 更接近图片 */
+
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #2a2a3d;
+  background: linear-gradient(45deg, #1a1a2e, #16213e);
+}
+
+.panel-header h2 {
+  margin: 0;
+  color: #00ffff;
+  font-size: 18px;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.table-selector {
+  display: flex;
+  align-items: center;
+}
+
+.table-dropdown {
+  background-color: #1a1a2e;
+  color: #00ffff;
+  border: 1px solid #00ffff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.table-dropdown:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.data-content {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  height: 60vh;           /* 或者 max-height: 60vh; 或 500px */
+  border: 1px solid #2a2a3d;
+  border-radius: 8px;
+  background-color: #1a1a2e;
+}
+
+.data-grid {
+  margin-bottom: 20px;
+  border: 1px solid #2a2a3d;
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: 30vh; /* 添加这个 */
+  overflow-y: auto; /* 确保这个存在 */
+}
+/* 然后滚动条样式前缀改为 .data-grid */
+.data-grid::-webkit-scrollbar {
+  width: 8px;
+}
+.data-grid::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+.data-grid::-webkit-scrollbar-thumb {
+  background: #728595;
+  border-radius: 4px;
+}
+.data-grid {
+  scrollbar-width: thin;
+  scrollbar-color: #3f5160 #1a1a2e;
+}
+
+.data-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1px;
+  background-color: #1a1a2e;
+}
+
+
+.data-row.header-row {
+  background: linear-gradient(45deg, #2a2a3d, #3a3a4d);
+}
+
+.data-cell {
+  padding: 12px;
+  color: #e2e8f0;
+  font-size: 14px;
+  flex-wrap: nowrap;
+  white-space: normal;  /* 允许文本换行 */
+  word-break: break-word; /* 长单词或URL自动换行 */
+  overflow: visible;    /* 防止内容被隐藏 */
+  text-overflow: clip;  /* 不显示省略号 */
+}
+
+.header-cell {
+  color: #00ffff !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.data-row:not(.header-row):nth-child(even) {
+  background-color: #121222;
+}
+
+.data-row:hover:not(.header-row) {
+  background-color: #2a2a3d;
+}
+
+.data-summary {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #1a1a2e;
+  border-radius: 8px;
+  border: 1px solid #2a2a3d;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summary-item label {
+  color: #b0b0b0;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.summary-item span {
+  color: #00ffff;
+  font-weight: 600;
+}
+
+.view-report-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(45deg, #2b352f, #0d4227);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.view-report-btn:hover {
+  background: linear-gradient(45deg, #67907a, #259c61);
+  transform: translateY(-2px);
+}
+
+/* 操作面板样式 */
+
+
+.upload-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(45deg, #061625, #2d74ae);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.upload-btn:hover {
+  background: linear-gradient(45deg, #89a7c0, #277ac4);
+  transform: translateY(-2px);
+}
+
+.settings-btn {
+  width: 100%;
+  padding: 15px;
+  background-color: #2a2a3d;
+  color: #ffffff;
+  border: 1px solid #3a3a4d;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.settings-btn:hover {
+  background-color: #3a3a4d;
+  border-color: #00ffff;
+}
+
+.sync-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 10px 0;
+  padding: 10px 0;
+  border-top: 1px solid #2a2a3d;
+}
+
+.sync-status label {
+  color: #b0b0b0;
+  font-weight: 600;
+}
+
+.status-idle {
+  color: #00ffff;
+  font-weight: 600;
+}
+
+.status-uploading {
+  color: #4dabff;
+  font-weight: 600;
+}
+
+.status-completed {
+  color: #48bb78;
+  font-weight: 600;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #2a2a3d;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ffff, #4dabff);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .owner-content {
+    flex-direction: column;
+  }
+  
+  .data-panel,
+  .operations-panel {
+    min-width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .data-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .data-summary {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* 数据库信息样式 */
+.database-info {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #2a2a3d;
+}
+
+.database-info h3 {
+  color: #00ffff;
+  margin-bottom: 15px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 5px 0;
+}
+
+.info-item label {
+  color: #b0b0b0;
+  font-size: 12px;
+}
+
+.info-item span {
+  color: #00ffff;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* 数据摘要样式 */
+.data-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #1a1a2e;
+  border-radius: 8px;
+  border: 1px solid #2a2a3d;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.summary-item label {
+  color: #b0b0b0;
+  font-size: 11px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-item span {
+  color: #00ffff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+
+
+.data-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1px;
+  background-color: #1a1a2e;
+}
+
+.data-row.header-row {
+  background: linear-gradient(45deg, #2a2a3d, #3a3a4d);
+}
+
+.data-cell {
+  padding: 12px 10px;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-cell {
+  color: #00ffff !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.data-row:not(.header-row):nth-child(even) {
+  background-color: #121222;
+}
+
+.data-row:hover:not(.header-row) {
+  background-color: #2a2a3d;
+}
+
+/* 加载和错误状态 */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #00ffff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.error-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #ff4757;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* 状态面板样式 */
+.status-panel {
+  margin-top: 2px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #1a1a2e;
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.status-title {
+  color: #00ffcc;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.btn-clear-status {
+  background-color: #6e2929;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-clear-status:hover {
+  background-color: #ff0000;
+}
+
+.status-output {
+  height: 225px;
+  overflow-y: auto;
+  background-color: #0d0d1a;
+  color: #5de25d; /* 终端绿色 */
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+}
+
+.status-message {
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+/* ===================== 新增：表格样式（替换原来的 div.grid 样式）===================== */
+.data-table {
+  max-height: 200px;  
+  width: 100%;                     /* 表格撑满容器宽度 */
+  border-collapse: collapse;       /* 合并边框，更紧凑 */
+  background-color: #1a1a2e;       /* 背景色和原来一致 */
+  border: 1px solid #2a2a3d;       /* 边框和原来一致 */
+  border-radius: 8px;              /* 圆角和原来一致 */
+  overflow-y: hidden;                /* 隐藏多余部分（可选） */
+  font-family: 'Courier New', monospace; /* 等宽字体，和原来 div.cell 一致 */
+}
+
+/* 可滚动的表格容器 */
+.table-scroll {
+  flex: 1;
+  overflow-y: auto;       /* 表格超出时可滚动 */
+  margin-bottom: 20px;
+}
+
+.data-header-cell {
+  background: linear-gradient(45deg, #2a2a3d, #3a3a4d);
+  color: #00ffff !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 12px 10px;
+  text-align: left;
+  border: none;
+}
+
+.data-body-cell {
+  color: #e2e8f0;
+  font-size: 13px;
+  padding: 12px 10px;
+  border: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* 表头单元格样式 */
+.data-header-cell {
+  background: linear-gradient(45deg, #2a2a3d, #3a3a4d); /* 表头背景 */
+  color: #00ffff !important;                           /* 表头文字颜色 */
+  font-weight: 600;                                    /* 加粗 */
+  text-transform: uppercase;                           /* 全大写 */
+  font-size: 11px;                                     /* 字号 */
+  letter-spacing: 0.5px;                               /* 字间距 */
+  padding: 12px 10px;                                  /* 内边距 */
+  text-align: left;                                    /* 左对齐 */
+  border: none;                                        /* 去掉默认边框，用 collapse 控制 */
+}
+
+/* 数据行单元格样式 */
+.data-body-cell {
+  color: #e2e8f0;                                      /* 文字颜色 */
+  font-size: 13px;                                     /* 字号 */
+  padding: 12px 10px;                                  /* 内边距 */
+  border: none;                                        /* 去掉边框 */
+  white-space: nowrap;                                 /* 禁止换行，保证内容在一行 */
+  overflow: hidden;                                    /* 隐藏溢出（可选） */
+  text-overflow: ellipsis;                             /* 溢出显示省略号（可选，如不想显示可改为 clip） */
+}
+
+/* 表头行样式 */
+.data-table thead tr {
+  background: linear-gradient(45deg, #2a2a3d, #3a3a4d);
+}
+
+/* 偶数行背景 */
+.data-body-row:nth-child(even) {
+  background-color: #121222;                           /* 偶数行浅色背景 */
+}
+
+/* 鼠标悬浮行 */
+.data-body-row:hover {
+  background-color: #2a2a3d;                             /* 悬浮高亮背景 */
+}
+
+
+
+
