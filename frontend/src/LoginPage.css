@@ -54,7 +54,7 @@
 .login-btn {
   width: 100%;
   padding: 12px;
-  background-color: #4dabff;
+  background-color: #477dac;
   color: white;
   border: none;
   border-radius: 6px;
@@ -65,7 +65,7 @@
 }
 
 .login-btn:hover {
-  background-color: #339af0;
+  background-color: #1d4c73;
 }
 
 /* 自定义登录成功弹窗样式 */
@@ -137,4 +137,23 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* 新增返回按钮样式 */
+.back-btn {
+  margin-top: 6px;
+  width: 100%;
+  padding: 12px;
+  background-color: #69737b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #d32f2f;
 }

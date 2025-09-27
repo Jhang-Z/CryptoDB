@@ -6,12 +6,12 @@ CREATE TABLE `user_credit` (
 	`ID` varchar(64) NOT NULL,
 	`credit_rank` int NOT NULL,
 	`income` int NOT NULL,
-	`age` int NOT NULL,
-	PRIMARY KEY (`ID`)
+	`age` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `user_credit` WRITE;
 INSERT INTO `user_credit` VALUES ("1", 6, 100000, 20);
+INSERT INTO `user_credit` VALUES ("1", 4, 200000, 30);
 INSERT INTO `user_credit` VALUES ("2", 5, 90000, 19);
 INSERT INTO `user_credit` VALUES ("3", 6, 89700, 32);
 INSERT INTO `user_credit` VALUES ("4", 6, 607000, 30);

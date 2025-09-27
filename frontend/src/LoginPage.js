@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
 
-function LoginPage({ onLoginSuccess }) {
+function LoginPage({ onLoginSuccess, onBack }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,6 +36,13 @@ function LoginPage({ onLoginSuccess }) {
       setTimeout(() => {
         setShowErrorModal(false);
       }, 1000);
+    }
+  };
+
+     // 返回按钮处理函数 - 使用您App.js中已有的onBack回调
+  const handleBack = () => {
+    if (onBack) {
+      onBack(); // 调用父组件传递的返回函数
     }
   };
 
@@ -68,6 +76,13 @@ function LoginPage({ onLoginSuccess }) {
           <button type="submit" className="login-btn">
             登录
           </button>
+           <button 
+              type="button" 
+              className="back-btn"
+              onClick={handleBack}
+            >
+              返回
+            </button>
         </form>
       </div>
 

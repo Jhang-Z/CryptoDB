@@ -16,16 +16,15 @@ using json = nlohmann::json;
 Fss fClient, fServer;
 ServerKeyEq k0;
 ServerKeyEq k1;
+ServerKeyLt lt_k0;
+ServerKeyLt lt_k1;
 
 
-std::map<std::string, mpz_class> g_ans0_data_for_8081;
-
-// 全局变量：用于存放要传给 8082 的 ans1 数据（列名, ans1）
-std::map<std::string, mpz_class>g_ans1_data_for_8082;
-
+std::map<std::string, std::vector<mpz_class>> g_ans0_data_for_8081;  // 存储每列的ans0数据（每行一个值）
+std::map<std::string, std::vector<mpz_class>> g_ans1_data_for_8082;  // 存储每列的ans1数据（每行一个值）
 
 // 计算 FSS 结果，并以 JSON 格式返回 ans0 和 ans1
-std::string compute_fss_results(const std::string& input_str, const std::string& table) {
+std::string compute_dpf_results(const std::string& input_str, const std::string& table) {
     uint64_t a = 0;
     try {
         a = std::stoull(input_str); // 转成 uint64_t
@@ -66,8 +65,6 @@ std::string compute_fss_results(const std::string& input_str, const std::string&
 
     MYSQL_RES* result = mysql_store_result(conn);
 
-
-
     if (!result) {
         mysql_close(conn);
         json err_json;
@@ -84,6 +81,8 @@ std::string compute_fss_results(const std::string& input_str, const std::string&
 
      // 动态计算每列结果
     std::map<std::string, std::pair<mpz_class, mpz_class>> column_results;
+    std::map<std::string, std::vector<std::pair<mpz_class, mpz_class>>> row_results;
+    
     unsigned long num_rows = mysql_num_rows(result);
 
     for (unsigned long i = 0; i < num_rows; ++i) {
@@ -103,55 +102,58 @@ std::string compute_fss_results(const std::string& input_str, const std::string&
             mpz_class f0 = evaluateEq(&fServer, &k0, i_val);
             mpz_class f1 = evaluateEq(&fServer, &k1, i_val);
 
-            column_results[col_name].first += f0 * col_val;
-            column_results[col_name].second += f1 * col_val;
+            row_results[col_name].emplace_back(f0 * col_val, f1 * col_val);
+
         }
     }
 
-    g_ans0_data_for_8081.clear();
-    g_ans1_data_for_8082.clear();
+         g_ans0_data_for_8081.clear();
+         g_ans1_data_for_8082.clear();
 
-    for (const auto& [col_name, vals] : column_results) {
-    // ans0 是 vals.first (f0 * col_val)，转为字符串
-    mpz_class ans0 = vals.first;
-    // ans1 是 vals.second (f1 * col_val)，转为字符串
-    mpz_class ans1 = vals.second;
-    // 添加到 8081 要返回的 ans0 数据：{ 列名, ans0 }
-    g_ans0_data_for_8081.emplace(col_name, ans0);
+        // 遍历每列的结果，存储所有行的数据
+        for (const auto& [col_name, row_vals] : row_results) {
+            // 为每列初始化向量
+            std::vector<mpz_class> ans0_values;
+            std::vector<mpz_class> ans1_values;
+            
+            // 遍历每行数据
+            for (const auto& [ans0, ans1] : row_vals) {
+                ans0_values.push_back(ans0);
+                ans1_values.push_back(ans1);
+            }
+            
+            // 存储到全局变量
+            g_ans0_data_for_8081[col_name] = ans0_values;
+            g_ans1_data_for_8082[col_name] = ans1_values;
+        }
 
-    // 添加到 8082 要返回的 ans1 数据：{ 列名, ans1 }
-    g_ans1_data_for_8082.emplace(col_name, ans1);
-}
 
-    // 后端返回的 JSON 格式示例：
-    //     {
-    //   "status": "success",
-    //   "table": "user_credit",
-    //   "columns": [
-    //     { "name": "credit_rank", "ans0": "12345", "ans1": "67890" },
-    //     { "name": "income", "ans0": "23456", "ans1": "78901" },
-    //     { "name": "age", "ans0": "34567", "ans1": "89012" }
-    //   ]
     json j;
     j["status"] = "success";
     j["table"] = table;
-    json columns_array = json::array();
-    for (const auto& [col_name, vals] : column_results) {
-        columns_array.push_back({
-            {"name", col_name},
-            {"ans0", vals.first.get_str()},
-            {"ans1", vals.second.get_str()}
-        });
-    }
-    j["columns"] = columns_array;
+    // json columns_array = json::array();
 
-    if (result) mysql_free_result(result);
-     mysql_close(conn);
+    // for (const auto& [col_name, row_vals] : row_results) {
+    //     json col_data = {
+    //         {"name", col_name},
+    //         {"rows", json::array()}
+    //     };
+        
+    //     for (const auto& [ans0, ans1] : row_vals) {
+    //         col_data["rows"].push_back({
+    //             {"ans0", ans0.get_str()},
+    //             {"ans1", ans1.get_str()}
+    //         });
+    //     }
+        
+    //     columns_array.push_back(col_data);
+    // }
 
+    // j["columns"] = columns_array;
     return j.dump();
 }
 
-
+// 计算 FSS 结果，并以 JSON 格式返回 ans0 和 ans1
 
 
 
@@ -212,7 +214,7 @@ int main() {
                     std::cout << "📋 选择的表: " << table << std::endl;
 
                     // 调用核心函数，得到 JSON 格式的 ans0 和 ans1
-                    responseText = compute_fss_results(userInput, table); // 传递表名
+                    responseText = compute_dpf_results(userInput, table); // 传递表名
 
             } else {
                 json err_json;
@@ -281,20 +283,25 @@ int main() {
 
         json j;
         j["status"] = "success";
-    
+        
         json columns_array = json::array();
-        for (const auto& [col_name, vals] : g_ans0_data_for_8081) {
-            columns_array.push_back({
+        for (const auto& [col_name, ans0_values] : g_ans0_data_for_8081) {
+            json col_data = {
                 {"name", col_name},
-                {"ans0", vals.get_str()}
-            });
+                {"ans0_values", json::array()}
+            };
+            
+            for (const auto& val : ans0_values) {
+                col_data["ans0_values"].push_back(val.get_str());
+            }
+            
+            columns_array.push_back(col_data);
         }
         j["columns"] = columns_array;
 
-        // 返回 JSON 文本
         auto resp = HttpResponse::newHttpResponse();
         resp->setBody(j.dump());
-        resp->setContentTypeCode(ContentType::CT_APPLICATION_JSON); // 重要！告诉前端这是 JSON
+        resp->setContentTypeCode(ContentType::CT_APPLICATION_JSON);
         resp->addHeader("Access-Control-Allow-Origin", "*");
         callback(resp);
     },
@@ -332,20 +339,25 @@ int main() {
 
         json j;
         j["status"] = "success";
-    
+        
         json columns_array = json::array();
-        for (const auto& [col_name, vals] : g_ans1_data_for_8082) {
-            columns_array.push_back({
+        for (const auto& [col_name, ans1_values] : g_ans1_data_for_8082) {
+            json col_data = {
                 {"name", col_name},
-                {"ans1", vals.get_str()}
-            });
+                {"ans1_values", json::array()}
+            };
+            
+            for (const auto& val : ans1_values) {
+                col_data["ans1_values"].push_back(val.get_str());
+            }
+            
+            columns_array.push_back(col_data);
         }
         j["columns"] = columns_array;
 
-        // 返回 JSON 文本
         auto resp = HttpResponse::newHttpResponse();
         resp->setBody(j.dump());
-        resp->setContentTypeCode(ContentType::CT_APPLICATION_JSON); // 重要！告诉前端这是 JSON
+        resp->setContentTypeCode(ContentType::CT_APPLICATION_JSON);
         resp->addHeader("Access-Control-Allow-Origin", "*");
         callback(resp);
 
