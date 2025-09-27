@@ -1,12 +1,13 @@
+/* global BigInt */
 import React, {  useState, useEffect, useRef } from 'react';
 import './CryptoDBPanel.css'; // 引入样式文件
 
 function CryptoDBPanel({ onLogout }) {
   const [query, setQuery] = useState('');
   const [decryptedOutput, setDecryptedOutput] = useState('');
-  const [selectedTable, setSelectedTable] = useState('user_stats');
+  const [selectedTable, setSelectedTable] = useState('');
   const [statusMessages, setStatusMessages] = useState([]); // 新增状态，用于存储状态消息
-  const [selectedQueryMode, setSelectedQueryMode] = useState('exact'); // 默认是等值查询
+  const [selectedQueryMode, setSelectedQueryMode] = useState('');  // 默认是等值查询
   const [rowData0, setRowData0] = useState({}); // {columnName: [{ans0: value, rowId: id}, ...]}
   const [rowData1, setRowData1] = useState({});
   const [tableColumns, setTableColumns] = useState([]); // 存储当前选中表的列属性
@@ -15,6 +16,48 @@ const [selectedColumn, setSelectedColumn] = useState(''); // 当前选中的列
 
   // 创建 ref 用于状态输出容器
   const statusOutputRef = useRef(null);
+
+  //从数据库获取表列属性的函数：
+
+  const fetchTableColumns = async (tableName) => {
+  try {
+    addStatusMessage(`正在获取表 ${tableName} 的列属性...`);
+    
+    const response = await fetch(`http://172.28.7.202:8080/api/getTableColumns`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ table: tableName })
+});
+    const data = await response.json();
+    
+    if (data && data.columns) {
+      setTableColumns(data.columns);
+      console.log("col data:", data.columns);
+      addStatusMessage(`成功获取表 ${tableName} 的列属性`);
+    } else {
+      setTableColumns([]);
+      addStatusMessage(`表 ${tableName} 没有返回列属性数据`);
+    }
+  } catch (error) {
+    setTableColumns([]);
+    addStatusMessage(`获取表 ${tableName} 列属性失败: ${error.message}`);
+    console.error('获取表列属性错误:', error);
+  }
+};
+
+  const handleTableChange = async (e) => {
+  const tableName = e.target.value;
+  setSelectedTable(tableName);
+  setSelectedColumn(''); // 重置列选择
+   // 只有当用户选择了具体的表（非空）时，才去获取列信息
+  if (tableName) {
+    await fetchTableColumns(tableName);
+  } else {
+    // 用户选择了“请选择表”，清空列信息
+    setTableColumns([]);
+  }
+ 
+};
 
   // 添加状态消息的函数
   const addStatusMessage = (message) => {
@@ -36,17 +79,46 @@ const [selectedColumn, setSelectedColumn] = useState(''); // 当前选中的列
 
   const handleSecureQuery = async () => {
     if (!query.trim()) {
-      alert('请输入一个正整数后再提交。');
+    alert('请输入查询语句');
+    return;
+    }
+
+    if (!selectedTable) {
+      alert('请选择一个表');
       return;
     }
 
+    if (!selectedQueryMode) {
+      alert('请选择查询模式');
+      return;
+    }
+
+    // 如果您的查询逻辑依赖列选择，比如只针对某列加密/查询，也可以加上：
+    if (!selectedColumn) {
+      alert('请选择列');
+      return;
+    }
+
+    if (selectedQueryMode==='exact') {
+      const generatedQueryString = `select * from ${selectedTable} where ${selectedColumn} = '${query}'`;
+      addStatusMessage(`生成查询语句: `);
+     addStatusMessage(`${generatedQueryString}`);
+    }
+    
+
     addStatusMessage('正在提交安全查询...');
+
+   
     
     try {
       const response = await fetch('http://172.28.7.202:8080/api/secureQuery', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, table: selectedTable }),
+        body: JSON.stringify({ query, 
+          table: selectedTable,
+          column: selectedColumn,     // 新增：当前选中的列名
+          mode: selectedQueryMode,   // 新增：当前选中的查询模式}),
+      })
       });
 
       const rawData = await response.text();
@@ -166,13 +238,10 @@ const handleDecryptResults = () => {
       const ans0Str = item0?.ans0;
       const ans1Str = item1?.ans1;
 
-      const num0 = Number(ans0Str);
-      const num1 = Number(ans1Str);
+      const num0 = BigInt(ans0Str);
+      const num1 = BigInt(ans1Str);
 
-      // 检查是否是合法数字
-      if (isNaN(num0) || isNaN(num1)) {
-        return 'N/A';
-      }
+  
 
       // 计算差值
       return num0 - num1;
@@ -193,7 +262,7 @@ const handleDecryptResults = () => {
     // 检查当前行是否全为零
     for (const key in decryptedOutput) {
       const value = decryptedOutput[key][rowIndex];
-      if (value !== 0 && value !== '0' && value !== 'N/A') {
+      if (value !== 0n) {
         isAllZero = false;
         break;
       }
@@ -244,35 +313,73 @@ const handleDecryptResults = () => {
             <div className="panel-title">检索模式</div>
             
             {/* 🔧 新增：查询模式 label + 下拉菜单 */}
+             <label htmlFor="column-select" className="query-mode-label">选择查询模式</label>
             
             <select
-              id="query-mode-select"
-              className="table-select query-mode-select"  // 复用或新增样式
-              value={selectedQueryMode}
-              onChange={(e) => setSelectedQueryMode(e.target.value)}
-            >
-              <option value="exact">等值查询</option>
-              <option value="range">范围查询</option>
-              <option value="prefix">前缀查询</option>
-            </select> 
+            id="query-mode-select"
+            className="table-select query-mode-select"  // 注意：您原来的 className 有笔误，应该是 query-mode-select，不是 query-mode-label
+            value={selectedQueryMode}
+            onChange={(e) => {
+            const mode = e.target.value;
+            setSelectedQueryMode(mode);
+            setQuery(''); // 清空 query 输入框
+          }}
+
+          >
+            <option value="">-- 请选择查询模式 --</option>
+            <option value="exact">等值查询</option>
+            <option value="range">范围查询</option>
+            <option value="prefix">前缀查询</option>
+          </select>
             <textarea
-              id="query-input"
-              className="query-input"
-              placeholder="Enter your encrypted SQL query here..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            ></textarea>
-            <label htmlFor="query-mode-select" className="query-mode-label">选择表</label>
-            <select
-              id="table-select"
-              className="table-select"
-              value={selectedTable}
-              onChange={(e) => setSelectedTable(e.target.value)}
-            >
-              
-              <option value="user_stats">user_stats</option>
-              <option value="user_credit">user_credit</option>             
-            </select>          
+  id="query-input"
+  className="query-input"
+  placeholder={
+    selectedQueryMode === 'exact'
+      ? 'Enter the exact value to query (e.g. 100)'
+      : selectedQueryMode === 'range'
+      ? 'Enter the range as min,max (e.g. 100,200)'
+      : selectedQueryMode === 'prefix'
+      ? 'Enter the prefix value (e.g. \'user_\')'
+      : 'Select a query mode first'
+  }
+  value={query}
+  onChange={(e) => setQuery(e.target.value)}
+></textarea>
+            <div className="table-selection-container">
+  <div className="table-select-group">
+    <label htmlFor="column-select" className="query-mode-label">选择表</label>
+    <select
+  id="table-select"
+  className="table-select"
+  value={selectedTable}
+  onChange={handleTableChange}
+>
+  
+  <option value="">-- 请选择表 --</option>
+  <option value="user_stats">user_stats</option>
+  <option value="user_credit">user_credit</option>
+</select>
+  </div>
+  
+  <div className="column-select-group">
+    <label htmlFor="column-select" className="query-mode-label">选择列</label>
+    <select
+      id="column-select"
+      className="table-select"
+      value={selectedColumn}
+      onChange={(e) => setSelectedColumn(e.target.value)}
+      disabled={tableColumns.length === 0}
+    >
+      <option value="">-- 请选择列 --</option>
+      {tableColumns.map(column => (
+        <option key={`column-${column.name}`} value={column.name}>
+          {column.name}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>       
              
             <button id="secure-query" className="btn btn-secure" onClick={handleSecureQuery}>
               Secure Query
@@ -431,7 +538,7 @@ const handleDecryptResults = () => {
             
             <div className="query-results">
                {Object.keys(decryptedOutput).length === 0 ? (
-      <div className="result-item">Waiting for decrypted</div>
+      <div className="result-item">No results</div>
     ) : (
      <div className="table-scroll1">
     <table className="data-table1">
@@ -451,6 +558,8 @@ const handleDecryptResults = () => {
                 ...Object.values(decryptedOutput).map(col => col.length)
               );
               
+              
+
               // 生成行数据
               const rows = [];
               for (let i = 0; i < maxRows; i++) {
