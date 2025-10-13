@@ -246,6 +246,7 @@ void generateTreeEq(Fss* f, ServerKeyEq* k0, ServerKeyEq* k1, uint64_t a_i, uint
     }
 }
 
+
 // Generate keys for 2 party less than FSS 
 
 void generateTreeLt(Fss* f, ServerKeyLt* k0, ServerKeyLt* k1, uint64_t a_i, uint64_t b_i){

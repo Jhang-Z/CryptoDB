@@ -11,7 +11,8 @@ function CryptoDBPanel({ onLogout }) {
   const [rowData0, setRowData0] = useState({}); // {columnName: [{ans0: value, rowId: id}, ...]}
   const [rowData1, setRowData1] = useState({});
   const [tableColumns, setTableColumns] = useState([]); // 存储当前选中表的列属性
-const [selectedColumn, setSelectedColumn] = useState(''); // 当前选中的列
+  const [selectedColumn, setSelectedColumn] = useState(''); // 当前选中的列
+  const [hasAttemptedDecrypt, setHasAttemptedDecrypt] = useState(false);
 
 
   // 创建 ref 用于状态输出容器
@@ -78,6 +79,7 @@ const [selectedColumn, setSelectedColumn] = useState(''); // 当前选中的列
   }, [statusMessages]); // 当 statusMessages 变化时触发
 
   const handleSecureQuery = async () => {
+    setHasAttemptedDecrypt(false);
     if (!query.trim()) {
     alert('请输入查询语句');
     return;
@@ -120,6 +122,9 @@ const [selectedColumn, setSelectedColumn] = useState(''); // 当前选中的列
           mode: selectedQueryMode,   // 新增：当前选中的查询模式}),
       })
       });
+      setDecryptedOutput({});
+      setRowData0({});
+      setRowData1({});
 
       const rawData = await response.text();
       const data = JSON.parse(rawData);
@@ -206,18 +211,21 @@ const handleFetchAns0FromServer1 = async () => {
 
   const handleClearInput = () => {
     setQuery('');
-    setDecryptedOutput('');
+    
     addStatusMessage('已清除所有输入和结果');
+    setDecryptedOutput({});
     setRowData0({});
     setRowData1({});
+    setHasAttemptedDecrypt(false);
   };
 
 const handleDecryptResults = () => {
   addStatusMessage('正在解密结果...');
 
   if (Object.keys(rowData0).length === 0 || Object.keys(rowData1).length === 0) {
-    setDecryptedOutput('No data yet, please query Server1 and Server2 first');
     addStatusMessage('解密失败：缺少 Server1 或 Server2 数据');
+    setDecryptedOutput({}); // ⚠️ 一定要设为空对象，不是字符串
+    setHasAttemptedDecrypt(true); // 👈 表明用户已点击解密
     return;
   }
 
@@ -289,7 +297,7 @@ const handleDecryptResults = () => {
 
   // 设置到 state，用于后续展示或导出
   setDecryptedOutput(filteredOutput);
-
+  setHasAttemptedDecrypt(true);
   addStatusMessage('解密完成：已生成各列的差值（字符串数字数组）');
 };
 
@@ -323,6 +331,7 @@ const handleDecryptResults = () => {
             const mode = e.target.value;
             setSelectedQueryMode(mode);
             setQuery(''); // 清空 query 输入框
+            addStatusMessage(`已选择${mode}查询模式`);
           }}
 
           >
@@ -368,7 +377,7 @@ const handleDecryptResults = () => {
       id="column-select"
       className="table-select"
       value={selectedColumn}
-      onChange={(e) => setSelectedColumn(e.target.value)}
+      onChange={(e)=> {setSelectedColumn(e.target.value); addStatusMessage(`已选择列属性 ${e.target.value} `);}}
       disabled={tableColumns.length === 0}
     >
       <option value="">-- 请选择列 --</option>
@@ -429,7 +438,7 @@ const handleDecryptResults = () => {
 
               
     {Object.keys(rowData0).length === 0 ? (
-      <div className="result-item">No data from Server1</div>
+      <div className="result-item">   No data from Server1</div>
     ) : (
      <div className="table-scroll1">
     <table className="data-table1">
@@ -536,51 +545,50 @@ const handleDecryptResults = () => {
               Decrypt Results
             </button>
             
-            <div className="query-results">
-               {Object.keys(decryptedOutput).length === 0 ? (
-      <div className="result-item">No results</div>
-    ) : (
-     <div className="table-scroll1">
-    <table className="data-table1">
-         <thead>
-    <tr>
-      {Object.keys(decryptedOutput).map(colName => (
-        <th key={`s1-header-${colName}`} className="data-header1">
-          {colName}
-        </th>
-      ))}
-    </tr>
-  </thead>
-          <tbody>
-            {(() => {
-              // 获取最大行数
-              const maxRows = Math.max(
-                ...Object.values(decryptedOutput).map(col => col.length)
-              );
-              
-              
 
-              // 生成行数据
-              const rows = [];
-              for (let i = 0; i < maxRows; i++) {
-                rows.push(
-                  <tr key={`s1-row-${i}` } className="data-body-row1">
-               
-                    {Object.keys(decryptedOutput).map(colName => (
-                      <td key={`s1-cell-${colName}-${i}`} className="data-body-cell1">
-                        {decryptedOutput[colName][i]}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              }
-              return rows;
-            })()}
-          </tbody>
-        </table>
-      </div>
-    )}
-            </div>
+
+            <div className="query-results">
+           {hasAttemptedDecrypt ? (
+  Object.keys(decryptedOutput).length === 0 ? (
+    <div className="result-item">No results</div>
+  ) : (
+    <div className="table-scroll1">
+      <table className="data-table1">
+        <thead>
+          <tr>
+            {Object.keys(decryptedOutput).map(colName => (
+              <th key={`s1-header-${colName}`} className="data-header1">
+                {colName}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {(() => {
+            const maxRows = Math.max(
+              ...Object.values(decryptedOutput).map(col => col.length)
+            );
+            const rows = [];
+            for (let i = 0; i < maxRows; i++) {
+              rows.push(
+                <tr key={`s1-row-${i}`} className="data-body-row1">
+                  {Object.keys(decryptedOutput).map(colName => (
+                    <td key={`s1-cell-${colName}-${i}`} className="data-body-cell1">
+                      {decryptedOutput[colName][i]}
+                    </td>
+                  ))}
+                </tr>
+              );
+            }
+            return rows;
+          })()}
+        </tbody>
+      </table>
+    </div>
+  )
+) : (
+  <div className="result-item">Waiting for decrypt</div>
+)}</div>  
           </div>
         </div>
       </div>
