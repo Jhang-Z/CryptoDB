@@ -338,25 +338,6 @@ std::string compute_dpf_results(const std::string& input_str, const std::string&
     json j;
     j["status"] = "success";
     j["table"] = table;
-    // json columns_array = json::array();
-
-    // for (const auto& [col_name, row_vals] : row_results) {
-    //     json col_data = {
-    //         {"name", col_name},
-    //         {"rows", json::array()}
-    //     };
-        
-    //     for (const auto& [ans0, ans1] : row_vals) {
-    //         col_data["rows"].push_back({
-    //             {"ans0", ans0.get_str()},
-    //             {"ans1", ans1.get_str()}
-    //         });
-    //     }
-        
-    //     columns_array.push_back(col_data);
-    // }
-
-    // j["columns"] = columns_array;
     return j.dump();
 }
 
